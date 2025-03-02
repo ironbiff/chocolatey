@@ -16,7 +16,7 @@ Dieses Repository enthält eine Liste von Chocolatey-Paketen, die auf einem Wind
 1. Öffne eine **PowerShell-Konsole als Administrator**
 2. Führe folgenden Befehl aus:
    ```powershell
-   Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/dein-username/dein-repo/main/install.ps1'))
+   Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/ironbiff/chocolatey/main/install.ps1'))
    ```
 
 Das Skript installiert Chocolatey (falls nicht vorhanden), lädt die neueste `packages.config` aus diesem Repository herunter und installiert alle darin definierten Pakete.
