@@ -21,19 +21,29 @@ if (!(Get-Command git -ErrorAction SilentlyContinue)) {
     RefreshEnv
 }
 
-# Repository von GitHub klonen oder updaten
+# Repository-Verzeichnis festlegen
 $repoPath = "$env:TEMP\chocolatey"
-if (Test-Path $repoPath) {
+
+# Prüfen, ob das Repository existiert und gültig ist
+if (Test-Path "$repoPath\.git") {
     Write-Host "Aktualisiere bestehendes Repository..." -ForegroundColor Green
-    cd $repoPath
+    Set-Location $repoPath
     git pull
 } else {
+    # Falls nicht, neu klonen
     Write-Host "Klone Repository..." -ForegroundColor Green
+    Remove-Item -Recurse -Force $repoPath -ErrorAction SilentlyContinue
     git clone https://github.com/ironbiff/chocolatey.git $repoPath
+    Set-Location $repoPath
 }
 
-# Pakete aus der packages.config installieren
-Write-Host "Installiere Pakete aus packages.config..." -ForegroundColor Cyan
-choco install $repoPath\packages.config -y
-
-Write-Host "Installation abgeschlossen!" -ForegroundColor Green
+# Prüfen, ob die packages.config existiert
+$packageConfig = "$repoPath\packages.config"
+if (Test-Path $packageConfig) {
+    Write-Host "Installiere Pakete aus packages.config..." -ForegroundColor Cyan
+    choco install $packageConfig -y
+    Write-Host "Installation abgeschlossen!" -ForegroundColor Green
+} else {
+    Write-Host "FEHLER: packages.config wurde nicht gefunden!" -ForegroundColor Red
+    exit 1
+}
