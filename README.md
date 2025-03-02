@@ -5,6 +5,7 @@ Dieses Repository enthält eine Liste von Chocolatey-Paketen, die auf einem Wind
 ## ✨ Funktionen
 - Automatische Installation und Aktualisierung von Software mit Chocolatey
 - Sicherstellen, dass Git installiert ist
+- Klonen oder Aktualisieren des Repositorys
 - Einfache Verwaltung der Paketliste über GitHub
 - Einzeilige Installation auf jedem Windows-PC
 
@@ -19,7 +20,11 @@ Dieses Repository enthält eine Liste von Chocolatey-Paketen, die auf einem Wind
    Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/ironbiff/chocolatey/main/install.ps1'))
    ```
 
-Das Skript installiert Chocolatey (falls nicht vorhanden), stellt sicher, dass Git installiert ist, lädt die neueste `packages.config` aus diesem Repository herunter und installiert alle darin definierten Pakete.
+Das Skript führt folgende Schritte aus:
+1. Installiert Chocolatey, falls es nicht vorhanden ist
+2. Installiert Git, falls es nicht vorhanden ist
+3. Klont das Repository oder aktualisiert es, falls es bereits existiert
+4. Prüft, ob `packages.config` vorhanden ist und installiert die Pakete
 
 ## 📂 Pakete verwalten
 Die installierten Pakete sind in der Datei [`packages.config`](packages.config) definiert. Um neue Pakete hinzuzufügen oder zu entfernen:
