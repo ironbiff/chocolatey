@@ -44,7 +44,7 @@ Prüft, ob choco-packages.config vorhanden ist und installiert die Pakete mit Ch
 Prüft, ob winget-packages.config vorhanden ist und installiert die Pakete mit Winget
 
 ## 📂 Pakete verwalten
-# Chocolatey
+### Chocolatey
 Die installierten Pakete sind in der Datei choco-packages.config definiert.
 Um neue Pakete hinzuzufügen oder zu entfernen:
 
@@ -67,7 +67,7 @@ Beispiel:
 </packages>
 ```
 
-# Winget
+### Winget
 Die Pakete aus dem Microsoft Store oder anderen Winget-Quellen befinden sich in der Datei winget-packages.config.
 Diese Datei enthält pro Zeile eine Paket-ID oder App-ID.
 
