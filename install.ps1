@@ -55,7 +55,7 @@ if (Test-Path $wingetFile) {
     Get-Content $wingetFile | ForEach-Object {
         $pkg = $_.Trim()
         if ($pkg -and -not $pkg.StartsWith("#")) {
-            Write-Host "→ Installiere $pkg über winget..."
+            Write-Host "→ Installiere pkg über winget..."
             winget install --id "$pkg" --accept-source-agreements --accept-package-agreements -e
         }
     }
