@@ -38,7 +38,7 @@ if (Test-Path "$repoPath\.git") {
 }
 
 # Prüfen, ob die packages.config existiert
-$packageConfig = "$repoPath\packages.config"
+$packageConfig = "$repoPath\choco-packages.config"
 if (Test-Path $packageConfig) {
     Write-Host "Installiere Pakete aus packages.config..." -ForegroundColor Cyan
     choco install $packageConfig -y
@@ -53,7 +53,7 @@ if (Test-Path $packageConfig) {
 Write-Host "`nInstalliere Pakete über winget..." -ForegroundColor Cyan
 
 # Pfad zur winget-Datei
-$wingetFile = "$repoPath\winget-packages.txt"
+$wingetFile = "$repoPath\winget-packages.config"
 
 if (Test-Path $wingetFile) {
     Get-Content $wingetFile | ForEach-Object {
