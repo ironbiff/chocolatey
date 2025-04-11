@@ -47,3 +47,22 @@ if (Test-Path $packageConfig) {
     Write-Host "FEHLER: packages.config wurde nicht gefunden!" -ForegroundColor Red
     exit 1
 }
+
+# === WINGET SUPPORT ===
+
+Write-Host "`nInstalliere Pakete über winget..." -ForegroundColor Cyan
+
+# Pfad zur winget-Datei
+$wingetFile = "$repoPath\winget-packages.txt"
+
+if (Test-Path $wingetFile) {
+    Get-Content $wingetFile | ForEach-Object {
+        $package = $_.Trim()
+        if ($package -and -not $package.StartsWith("#")) {
+            Write-Host "→ Installiere $package über winget..."
+            winget install --id "$package" --accept-source-agreements --accept-package-agreements -e
+        }
+    }
+} else {
+    Write-Host "Keine winget-packages.txt gefunden. Überspringe winget-Installation." -ForegroundColor Yellow
+}
