@@ -1,38 +1,61 @@
-# Chocolatey Paket-Installation mit GitHub
+# Chocolatey & Winget Paket-Installation mit GitHub
 
-Dieses Repository enthält eine Liste von Chocolatey-Paketen, die auf einem Windows-PC installiert werden können. Die Pakete werden über eine `packages.config` verwaltet und mit einem PowerShell-Skript automatisch installiert.
+Dieses Repository enthält eine Liste von Chocolatey- und Winget-Paketen, die auf einem Windows-PC installiert werden können. Die Pakete werden über eine `choco-packages.config` (für Chocolatey) und `winget-packages.config` (für Winget) verwaltet und mit einem PowerShell-Skript automatisch installiert.
+
+---
 
 ## ✨ Funktionen
-- Automatische Installation und Aktualisierung von Software mit Chocolatey
-- Sicherstellen, dass Git installiert ist
-- Klonen oder Aktualisieren des Repositorys
-- Einfache Verwaltung der Paketliste über GitHub
-- Einzeilige Installation auf jedem Windows-PC
+
+- Automatische Installation und Aktualisierung von Software mit Chocolatey und Winget  
+- Sicherstellen, dass Git installiert ist  
+- Klonen oder Aktualisieren des Repositorys  
+- Einfache Verwaltung der Paketliste über GitHub  
+- Einzeilige Installation auf jedem Windows-PC  
+
+---
 
 ## ♻ Voraussetzungen
-- Windows 10 oder höher
-- Administratorrechte
+
+- Windows 10 oder höher  
+- Administratorrechte  
+
+---
 
 ## 🛠 Installation
+
 1. Öffne eine **PowerShell-Konsole als Administrator**
 2. Führe folgenden Befehl aus:
+
    ```powershell
    Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/ironbiff/chocolatey/main/install.ps1'))
-   ```
+   ``` 
+
 
 Das Skript führt folgende Schritte aus:
-1. Installiert Chocolatey, falls es nicht vorhanden ist
-2. Installiert Git, falls es nicht vorhanden ist
-3. Klont das Repository oder aktualisiert es, falls es bereits existiert
-4. Prüft, ob `packages.config` vorhanden ist und installiert die Pakete
+
+Installiert Chocolatey, falls es nicht vorhanden ist
+
+Installiert Git, falls es nicht vorhanden ist
+
+Klont das Repository oder aktualisiert es, falls es bereits existiert
+
+Prüft, ob choco-packages.config vorhanden ist und installiert die Pakete mit Chocolatey
+
+Prüft, ob winget-packages.config vorhanden ist und installiert die Pakete mit Winget
 
 ## 📂 Pakete verwalten
-Die installierten Pakete sind in der Datei [`packages.config`](packages.config) definiert. Um neue Pakete hinzuzufügen oder zu entfernen:
-1. Bearbeite die `packages.config`-Datei in diesem Repository
-2. Speichere die Änderungen und pushe sie nach GitHub
-3. Führe das Installationsskript erneut aus, um die Änderungen auf dem Zielsystem anzuwenden
+# Chocolatey
+Die installierten Pakete sind in der Datei choco-packages.config definiert.
+Um neue Pakete hinzuzufügen oder zu entfernen:
 
-## 🚀 Beispiel `packages.config`
+Bearbeite die choco-packages.config-Datei in diesem Repository
+
+Speichere die Änderungen und pushe sie nach GitHub
+
+Führe das Installationsskript erneut aus, um die Änderungen auf dem Zielsystem anzuwenden
+
+Beispiel:
+
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <packages>
@@ -44,9 +67,20 @@ Die installierten Pakete sind in der Datei [`packages.config`](packages.config) 
 </packages>
 ```
 
+# Winget
+Die Pakete aus dem Microsoft Store oder anderen Winget-Quellen befinden sich in der Datei winget-packages.config.
+Diese Datei enthält pro Zeile eine Paket-ID oder App-ID.
+
+Beispiel:
+```xml
+Spotify.Spotify
+Microsoft.PowerToys
+9WZDNCRFJ3TJ # Xbox Game Bar
+```
+
 ## ⚙ Automatische Updates einrichten
-Falls du das regelmäßig ausführen willst, kannst du das Skript als geplante Aufgabe (`taskschd.msc`) unter Windows hinzufügen. Alternativ kannst du es auch über eine Gruppenrichtlinie (`GPO`) automatisieren.
+Falls du das regelmäßig ausführen willst, kannst du das Skript als geplante Aufgabe (taskschd.msc) unter Windows hinzufügen.
+Alternativ kannst du es auch über eine Gruppenrichtlinie (GPO) automatisieren.
 
-## 👌 Fertig!
-Jetzt kannst du ganz einfach neue Windows-Systeme mit deinen bevorzugten Anwendungen ausstatten. 🚀
-
+👌 Fertig!
+Jetzt kannst du ganz einfach neue Windows-Systeme mit deinen bevorzugten Anwendungen ausstatten – ob aus dem Web oder aus dem Microsoft Store! 🚀
