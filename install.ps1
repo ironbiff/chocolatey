@@ -6,48 +6,46 @@ if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administra
     exit 1
 }
 
-Write-Host "`n🚀 Starte Installationsprozess..." -ForegroundColor Cyan
-
-# === GitHub Repo Pfad ===
-$repoUrl = "https://github.com/ironbiff/chocolatey.git"
-$repoPath = "$env:USERPROFILE\choco-setup"
-
-# === Chocolatey installieren, falls nötig ===
-if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
-    Write-Host "➡ Installiere Chocolatey..." -ForegroundColor Green
+# Chocolatey installieren, falls nicht vorhanden
+if (!(Test-Path "C:\ProgramData\Chocolatey\choco.exe")) {
     Set-ExecutionPolicy Bypass -Scope Process -Force
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-} else {
-    Write-Host "✅ Chocolatey ist bereits installiert."
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    RefreshEnv
 }
 
-# === Git installieren, falls nötig ===
+# Git installieren, falls nicht vorhanden
 if (!(Get-Command git -ErrorAction SilentlyContinue)) {
-    Write-Host "➡ Installiere Git..." -ForegroundColor Green
     choco install git -y
-} else {
-    Write-Host "✅ Git ist bereits installiert."
+    $env:Path += ";C:\Program Files\Git\bin"
+    RefreshEnv
 }
 
-# === Repository klonen oder aktualisieren ===
-if (Test-Path $repoPath) {
-    Write-Host "🔄 Aktualisiere bestehendes Repository..."
+# Repository-Verzeichnis festlegen
+$repoPath = "$env:TEMP\chocolatey"
+
+# Prüfen, ob das Repository existiert und gültig ist
+if (Test-Path "$repoPath\.git") {
+    Write-Host "Aktualisiere bestehendes Repository..." -ForegroundColor Green
     Set-Location $repoPath
     git pull
 } else {
-    Write-Host "📥 Klone Repository..."
-    git clone $repoUrl $repoPath
+    # Falls nicht, neu klonen
+    Write-Host "Klone Repository..." -ForegroundColor Green
+    Remove-Item -Recurse -Force $repoPath -ErrorAction SilentlyContinue
+    git clone https://github.com/ironbiff/chocolatey.git $repoPath
     Set-Location $repoPath
 }
 
-# === Chocolatey Pakete installieren ===
-$chocoFile = "$repoPath\choco-packages.config"
-if (Test-Path $chocoFile) {
-    Write-Host "`n📦 Installiere Pakete aus choco-packages.config..." -ForegroundColor Cyan
-    choco install $chocoFile -y
+# === Choco Pakete installieren und prüfen, ob die packages.config existiert
+$packageConfig = "$repoPath\packages.config"
+if (Test-Path $packageConfig) {
+    Write-Host "Installiere Pakete aus packages.config..." -ForegroundColor Cyan
+    choco install $packageConfig -y
+    Write-Host "Installation abgeschlossen!" -ForegroundColor Green
 } else {
-    Write-Host "⚠ choco-packages.config nicht gefunden – überspringe Chocolatey-Installation." -ForegroundColor Yellow
+    Write-Host "FEHLER: packages.config wurde nicht gefunden!" -ForegroundColor Red
+    exit 1
 }
 
 # === Winget Pakete installieren ===
