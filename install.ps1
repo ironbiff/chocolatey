@@ -65,4 +65,4 @@ if (Test-Path $wingetFile) {
     Write-Host "⚠ winget-packages.config nicht gefunden – überspringe Winget-Installation." -ForegroundColor Yellow
 }
 
-Write-Host "`n Alle Installationen abgeschlossen!" -ForegroundColor Green
+Write-Host "`n✅ Alle Installationen abgeschlossen!" -ForegroundColor Green
