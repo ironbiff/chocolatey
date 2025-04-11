@@ -6,63 +6,63 @@ if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administra
     exit 1
 }
 
-# Chocolatey installieren, falls nicht vorhanden
-if (!(Test-Path "C:\ProgramData\Chocolatey\choco.exe")) {
+Write-Host "`n🚀 Starte Installationsprozess..." -ForegroundColor Cyan
+
+# === GitHub Repo Pfad ===
+$repoUrl = "https://github.com/ironbiff/chocolatey.git"
+$repoPath = "$env:USERPROFILE\choco-setup"
+
+# === Chocolatey installieren, falls nötig ===
+if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
+    Write-Host "➡ Installiere Chocolatey..." -ForegroundColor Green
     Set-ExecutionPolicy Bypass -Scope Process -Force
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-    RefreshEnv
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+} else {
+    Write-Host "✅ Chocolatey ist bereits installiert."
 }
 
-# Git installieren, falls nicht vorhanden
+# === Git installieren, falls nötig ===
 if (!(Get-Command git -ErrorAction SilentlyContinue)) {
+    Write-Host "➡ Installiere Git..." -ForegroundColor Green
     choco install git -y
-    $env:Path += ";C:\Program Files\Git\bin"
-    RefreshEnv
+} else {
+    Write-Host "✅ Git ist bereits installiert."
 }
 
-# Repository-Verzeichnis festlegen
-$repoPath = "$env:TEMP\chocolatey"
-
-# Prüfen, ob das Repository existiert und gültig ist
-if (Test-Path "$repoPath\.git") {
-    Write-Host "Aktualisiere bestehendes Repository..." -ForegroundColor Green
+# === Repository klonen oder aktualisieren ===
+if (Test-Path $repoPath) {
+    Write-Host "🔄 Aktualisiere bestehendes Repository..."
     Set-Location $repoPath
     git pull
 } else {
-    # Falls nicht, neu klonen
-    Write-Host "Klone Repository..." -ForegroundColor Green
-    Remove-Item -Recurse -Force $repoPath -ErrorAction SilentlyContinue
-    git clone https://github.com/ironbiff/chocolatey.git $repoPath
+    Write-Host "📥 Klone Repository..."
+    git clone $repoUrl $repoPath
     Set-Location $repoPath
 }
 
-# Prüfen, ob die packages.config existiert
-$packageConfig = "$repoPath\choco-packages.config"
-if (Test-Path $packageConfig) {
-    Write-Host "Installiere Pakete aus packages.config..." -ForegroundColor Cyan
-    choco install $packageConfig -y
-    Write-Host "Installation abgeschlossen!" -ForegroundColor Green
+# === Chocolatey Pakete installieren ===
+$chocoFile = "$repoPath\choco-packages.config"
+if (Test-Path $chocoFile) {
+    Write-Host "`n📦 Installiere Pakete aus choco-packages.config..." -ForegroundColor Cyan
+    choco install $chocoFile -y
 } else {
-    Write-Host "FEHLER: packages.config wurde nicht gefunden!" -ForegroundColor Red
-    exit 1
+    Write-Host "⚠ choco-packages.config nicht gefunden – überspringe Chocolatey-Installation." -ForegroundColor Yellow
 }
 
-# === WINGET SUPPORT ===
-
-Write-Host "`nInstalliere Pakete über winget..." -ForegroundColor Cyan
-
-# Pfad zur winget-Datei
+# === Winget Pakete installieren ===
 $wingetFile = "$repoPath\winget-packages.config"
-
 if (Test-Path $wingetFile) {
+    Write-Host "`n📦 Installiere Pakete aus winget-packages.config..." -ForegroundColor Cyan
     Get-Content $wingetFile | ForEach-Object {
-        $package = $_.Trim()
-        if ($package -and -not $package.StartsWith("#")) {
-            Write-Host "→ Installiere $package über winget..."
-            winget install --id "$package" --accept-source-agreements --accept-package-agreements -e
+        $pkg = $_.Trim()
+        if ($pkg -and -not $pkg.StartsWith("#")) {
+            Write-Host "→ Installiere $pkg über winget..."
+            winget install --id "$pkg" --accept-source-agreements --accept-package-agreements -e
         }
     }
 } else {
-    Write-Host "Keine winget-packages.txt gefunden. Überspringe winget-Installation." -ForegroundColor Yellow
+    Write-Host "⚠ winget-packages.config nicht gefunden – überspringe Winget-Installation." -ForegroundColor Yellow
 }
+
+Write-Host "`n✅ Alle Installationen abgeschlossen!" -ForegroundColor Green
