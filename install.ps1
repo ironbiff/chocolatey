@@ -47,6 +47,3 @@ if (Test-Path $packageConfig) {
     Write-Host "FEHLER: packages.config wurde nicht gefunden!" -ForegroundColor Red
     exit 1
 }
-
-
-Write-Host "`n✅ Alle Installationen abgeschlossen!" -ForegroundColor Green
