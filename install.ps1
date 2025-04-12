@@ -48,6 +48,7 @@ if (Test-Path $packageConfig) {
     exit 1
 }
 
+@'
 # === Winget Pakete installieren ===
 $wingetFile = "$repoPath\winget-packages.config"
 if (Test-Path $wingetFile) {
@@ -62,5 +63,5 @@ if (Test-Path $wingetFile) {
 } else {
     Write-Host "winget-packages.config nicht gefunden – überspringe Winget-Installation." -ForegroundColor Yellow
 }
-
+'@
 Write-Host "`n✅ Alle Installationen abgeschlossen!" -ForegroundColor Green
