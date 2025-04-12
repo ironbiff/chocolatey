@@ -37,7 +37,7 @@ if (Test-Path "$repoPath\.git") {
     Set-Location $repoPath
 }
 
-# === Choco Pakete installieren und prüfen, ob die packages.config existiert
+# Prüfen, ob die packages.config existiert
 $packageConfig = "$repoPath\packages.config"
 if (Test-Path $packageConfig) {
     Write-Host "Installiere Pakete aus packages.config..." -ForegroundColor Cyan
